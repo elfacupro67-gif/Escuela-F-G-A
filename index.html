@@ -244,30 +244,37 @@ function mostrarSalon(salon,profesor){
 }
 function mostrarAlumnos(salon, profesor){
   document.getElementById('titulo').textContent='Alumnos';
-  if(salon === 'Secundaria A'){
-    document.getElementById('contenido').innerHTML=`
-      <div class="card">
-        <span class="badge">SECUNDARIA A</span>
-        <h2>Alumnos — Miss Gaela</h2>
-        <div class="cards">
-          <div class="room"><h3>👤 Valentina</h3><p>Secundaria A</p></div>
-          <div class="room"><h3>👤 Ian</h3><p>Secundaria A</p></div>
-          <div class="room"><h3>👤 Sofia</h3><p>Secundaria A</p></div>
-          <div class="room"><h3>👤 Sebas H</h3><p>Secundaria A</p></div>
-        </div>
-      </div>`;
-  } else {
-    document.getElementById('contenido').innerHTML=`
-      <div class="card">
-        <span class="badge">SECUNDARIA B</span>
-        <h2>Alumnos — Profe Facundo</h2>
-        <div class="cards">
-          <div class="room"><h3>👤 Ethan</h3><p>Secundaria B</p></div>
-          <div class="room"><h3>👤 Thiago</h3><p>Secundaria B</p></div>
-          <div class="room"><h3>👤 Flavia</h3><p>Secundaria B</p></div>
-        </div>
-      </div>`;
-  }
+  const estudiantes = salon === 'Secundaria A'
+    ? ['Valentina','Ian','Sofia','Sebas H']
+    : ['Ethan','Thiago','Flavia'];
+  const nombreProfesor = salon === 'Secundaria A' ? 'Miss Gaela' : 'Profe Facundo';
+  const cards = estudiantes.map(nombre => `
+    <div class="room" onclick="mostrarNotasAlumno('${nombre}','${salon}','${nombreProfesor}')" style="cursor:pointer">
+      <h3>👤 ${nombre}</h3>
+      <p>${salon}</p>
+      <p style="margin-top:8px;color:#27669d;font-weight:bold">📝 Ver notas</p>
+    </div>`).join('');
+  document.getElementById('contenido').innerHTML=`
+    <div class="card">
+      <span class="badge">${salon.toUpperCase()}</span>
+      <h2>Alumnos — ${nombreProfesor}</h2>
+      <p style="margin-top:8px">Presiona un alumno para entrar directamente a sus notas.</p>
+      <div class="cards">${cards}</div>
+      <button onclick="mostrarSalon('${salon}','${nombreProfesor}')" style="margin-top:20px;padding:10px 15px;border:0;border-radius:7px;background:#123b67;color:white;cursor:pointer">← Volver al salón</button>
+    </div>`;
+}
+
+function mostrarNotasAlumno(nombre,salon,profesor){
+  document.getElementById('titulo').textContent='Notas de '+nombre;
+  const id='notas_'+salon.replace(/\s/g,'_')+'_'+nombre.replace(/\s/g,'_');
+  document.getElementById('contenido').innerHTML=`
+    <div class="card">
+      <span class="badge">NOTAS DEL ALUMNO</span>
+      <h2>📝 ${nombre}</h2>
+      <p style="margin-top:8px">${salon} — ${profesor}</p>
+      <div style="margin-top:20px">${alumnoConNota(nombre,salon)}</div>
+      <button onclick="mostrarAlumnos('${salon}','${profesor}')" style="margin-top:20px;padding:10px 15px;border:0;border-radius:7px;background:#123b67;color:white;cursor:pointer">← Volver a alumnos</button>
+    </div>`;
 }
 
 function proximamente(nombre){
